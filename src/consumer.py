@@ -1,7 +1,7 @@
 '''
 Created on 16 kwi 2018
 
-@author: Kacper
+@author: Kacper Gracki
 '''
 # model.py
 from mesa import Agent, Model
