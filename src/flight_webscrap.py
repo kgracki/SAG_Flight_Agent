@@ -89,3 +89,29 @@ def check_flights(min_day, max_day):
         
         print(best_price)
         return best_price
+
+def check_promotion_fru():
+    
+    url = "https://www.fru.pl/bilety-lotnicze/promocje"
+        # get request from website
+    page = requests.get(url)
+    print(page)
+
+    # parse specific html page
+    soup = BeautifulSoup(page.content, 'html.parser')
+    g_list = soup.findAll("div", {"class": "direction ellipsis col-xs-7 col-sm-7 col-md-7 col-lg-7 pull-left"})
+    direction_g_list = soup.findAll("span", {"class": "content content no-padding no-margin"})
+    price_g_list = soup.findAll("div", {"class": "price text-right col-xs-5 col-sm-5 col-md-5 col-lg-5 pull-right"})
+    
+    price_list = soup.findAll("span", {"class": "value"})
+    print(direction_g_list)
+    print(price_list)
+    
+    direction = []
+    price = []
+    for i in range(12):
+        direction.append(direction_g_list[i].text)
+        price.append(price_g_list[i].text)
+        
+        print(direction[i])
+        print(price[i])
