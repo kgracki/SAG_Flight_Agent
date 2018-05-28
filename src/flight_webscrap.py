@@ -11,7 +11,7 @@ from urllib.request import urlopen
 
 best_price = 0
 
-def check_flights(min_day, max_day):
+def check_flights_azair(min_day, max_day):
     # url address with specific flight information
     url = ("http://www.azair.com/azfin.php?tp=0&"
            "searchtype=flexi&srcAirport=Warsaw+%"
