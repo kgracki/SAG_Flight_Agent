@@ -8,10 +8,11 @@ Created on 16 kwi 2018
 import requests
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
+import re
+import asyncio
 
-best_price = 0
 
-def check_flights_azair(min_day, max_day):
+async def check_flights_azair(min_day, max_day):
     # url address with specific flight information
     url = ("http://www.azair.com/azfin.php?tp=0&"
            "searchtype=flexi&srcAirport=Warsaw+%"
@@ -55,9 +56,19 @@ def check_flights_azair(min_day, max_day):
            "e&minHourStay=0%3A45&maxHourStay=23%3A20&minHourOutbound=0%3A00&max"
            "HourOutbound=24%3A00&minHourInbound=0%3A00&maxHourInbound=24%3A00&"
            "autoprice=true&adults=1&children=0&infants=0&maxChng=1&currency=PLN&indexSubmit=Search".format(min_day, max_day))
+    
+    url3 = ("http://www.azair.eu/azfin.php?searchtype=flexi&tp=0&isOneway=return&srcAirport="
+            "Warsaw+%5BWAW%5D+%28%2BWMI%29&srcFreeAirport=&srcTypedText=warsaw&srcFreeTypedText"
+            "=&srcMC=WAR_ALL&dstAirport=Anywhere+%5BXXX%5D&anywhere=true&dstap0=BRU&dstap2=CRL&dstap4"
+            "=LGG&dstap6=OST&dstFreeAirport=&dstTypedText=anywhere&dstFreeTypedText=&dstMC=&depmonth="
+            "201806&depdate=2018-06-04&aid=0&arrmonth=201806&arrdate=2018-06-30&minDaysStay={0}&maxDaysStay={1}"
+            "&dep0=true&dep1=true&dep2=true&dep3=true&dep4=true&dep5=true&dep6=true&arr0=true&arr1=true&arr2"
+            "=true&arr3=true&arr4=true&arr5=true&arr6=true&samedep=true&samearr=true&minHourStay=0%3A45&maxHourStay=23"
+            "%3A20&minHourOutbound=0%3A00&maxHourOutbound=24%3A00&minHourInbound=0%3A00&maxHourInbound=24%3A00"
+            "&autoprice=true&adults=1&children=0&infants=0&maxChng=1&currency=PLN&indexSubmit=Search".format(min_day, max_day))
 
     # get request from website
-    page = requests.get(url2)
+    page = requests.get(url3)
     print(page)
 
     # parse specific html page
@@ -67,7 +78,7 @@ def check_flights_azair(min_day, max_day):
     g_list = soup.findAll("div", {"class": "result"})
     date_g_list = soup.findAll("span", {"class": "date"}) 
     price_g_list = soup.findAll("span", {"class": "tp"})
-    global best_price
+
     best_price = price_g_list[0].text
 
     from_g_list = soup.findAll("span", {"class": "from"})
@@ -82,15 +93,16 @@ def check_flights_azair(min_day, max_day):
         print ("\t",from_g_list[(element * 4) + 2].text)
         print ("\t",to_g_list[(element * 4) + 2].text)
         print (price_g_list[element].text)
-        if (best_price > price_g_list[element].text):
-            best_price = price_g_list[element].text
-            print ("Best price...", best_price)
+#         if (best_price > price_g_list[element].text):
+#             best_price = price_g_list[element].text
+#             print ("Best price...", best_price)
         print ("\r\n\r\n")
         
-        print(best_price)
-        return best_price
+#     print(best_price)
+    pattern = best_price.split(" ")
+    return int(pattern[0])
 
-def check_promotion_fru():
+async def check_promotion_fru():
     
     url = "https://www.fru.pl/bilety-lotnicze/promocje"
         # get request from website
@@ -115,3 +127,7 @@ def check_promotion_fru():
         
         print(direction[i])
         print(price[i])
+
+
+# check_flights_azair(2, 6)
+    
