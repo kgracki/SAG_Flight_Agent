@@ -127,6 +127,8 @@ async def check_promotion_fru():
         
         print(direction[i])
         print(price[i])
+        
+    return price[0]
 
 
 # check_flights_azair(2, 6)

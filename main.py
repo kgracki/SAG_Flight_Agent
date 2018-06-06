@@ -43,7 +43,7 @@ def greetme(request, message):
 def email_callback(request, message):
     echo = "It's email agent!"
     request.actor.logger.info(echo)
-    send_email(message)
+#     send_email(message)
     
     return echo
 
@@ -52,9 +52,17 @@ async def check_flights(request, message):
     echo = "Agent {}".format(message)
     request.actor.logger.info(echo)
     price = await check_flights_azair(2, 6)
+    
+    return price
+
+@command()
+async def check_promotion(request, message):
+    echo = "Agent {}".format(message)
+    request.actor.logger.info(echo)
+    price = await check_promotion_fru()
     print(price)
     
-    return echo
+    return price
 
 def say_hello(arg,  **kw):
     print("Agent called {} started working".format(arg, kw))
@@ -62,7 +70,11 @@ def say_hello(arg,  **kw):
 def periodic_ping(arg,  **kw):
     print("Agent called {} is alive".format(arg, kw))
 
-
+def checking_done(actor, price1, price2):
+    print("GOT IT")
+    
+    
+    
 class FlightCheck:
     
     def __init__(self):
@@ -72,15 +84,17 @@ class FlightCheck:
 
         arb.start()
     
-    def __call__(self, a=None, b=None):
-        ensure_future(self._work(a, b))
+    def __call__(self, a=None, b=None, c=None):
+        ensure_future(self._work(a, b, c))
     
 
-    async def _work(self, a=None, b=None):
+    async def _work(self, a=None, b=None, c=None):
         if a is None:
             a = await spawn(name='greeter', start=say_hello, periodic_task=periodic_ping)
         if b is None:
-            b = await spawn(name='flight_agent', start=say_hello, periodic_task=periodic_ping)
+            b = await spawn(name='flight_azair', start=say_hello, periodic_task=periodic_ping)
+        if c is None:
+            c = await spawn(name="flight_fru", start=say_hello, periodic_task=periodic_ping)
         
 #         c = await spawn(name="email_agent")
             
@@ -95,14 +109,21 @@ class FlightCheck:
             await send(a, 'greetme', {'name': name})
            
 #             self._loop.call_soon(ensure_future, self(a, b))
-            self._loop.call_later(1, self, a, b)
+            self._loop.call_later(1, self, a, b, c)
             
         else:
             await send(a, 'stop')
-            await send(b, 'check_flights', {'name': "FRU"})
-            self._loop.call_later(100, self, a, b)
+            a = None
+            best_price_azair = await send(b, 'check_flights', "AZAIR")
+            best_price_fru = await send(c, 'check_promotion', "FRU")
+            
+            await send('arbiter', 'run', checking_done, best_price_azair, best_price_fru)
+            
+            self._loop.call_later(50, self, a, b, c)
+            print("Bitch...")
 #             arbiter().stop()
     
 
 if __name__ == '__main__':
     FlightCheck()
+    print("yooooooo")
