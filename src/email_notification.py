@@ -13,7 +13,7 @@ from constants import *
 # from email.mime.message import MIMEMessage
 
 
-def send_email(best_price):
+async def send_email(best_price):
     msg = MIMEMultipart()
     message = "Hello, best price is: %s" % best_price
     msg['Subject'] = "Checking flights"
@@ -32,5 +32,9 @@ def send_email(best_price):
         s.sendmail(gmail_user, to, msg.as_string())
         s.close()
         print ("Successfully sent message")
+        
+        return True
     except:
         print ("Error: can not send message")
+        
+        return False
