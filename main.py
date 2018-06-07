@@ -16,22 +16,7 @@ from openpyxl.styles.builtins import comma
 import asyncio
 
 
-# session = http.HttpClient
-
-# async def mycoroutine():
-#     response = await session.get("https://www.fru.pl/bilety-lotnicze/promocje")
-#     request = response.request()
-#     print(request.headers)
-#     
-#     return response.text()
-# 
-# check_promotion_fru()
-# check_flights_azair(3, 6)
-# send_email("284")
-
-
-
-names = ['AGENT_AZAIR', 'AGENT_FRU', 'EMAIL_AGENT', 'TEST_AGENT']
+names = ['AGENT_AZAIR', 'AGENT_FRU', 'TEST_AGENT']
 
 @command()
 def greetme(request, message):
@@ -47,7 +32,6 @@ async def email_callback(actor, message):
     return (await send_email(message))
     
     
-
 # @command()
 async def check_flights(actor, count):
     print("Actor {} is checking flights".format(actor.name))
@@ -76,7 +60,8 @@ def periodic_ping(arg,  **kw):
 async def checking_done(actor, price1, price2):
     print("Agent {} is checking prices...".format(actor.name))
     
-    best_flight = "TAJLANDIAAAAA"
+#     best_flight = "TAJLANDIAAAAA"
+    best_flight = price1
     email_actor = await spawn(name="email_actor", start=say_hello, periodic_task=periodic_ping)
     resp = await send(email_actor, 'run', email_callback, best_flight)
     if not resp:
@@ -146,7 +131,7 @@ class FlightCheck:
             
             await send('arbiter', 'run', checking_done, best_price_azair, best_price_fru)
             
-            self._loop.call_later(60, self, a, b, c)
+            self._loop.call_later(80, self, a, b, c)
 #             arbiter().stop()
     
 

@@ -15,7 +15,8 @@ from constants import *
 
 async def send_email(best_price):
     msg = MIMEMultipart()
-    message = "Hello, best price is: %s" % best_price
+    message_flight = ''.join(best_price)
+    message = "Hello, best price is: %s" % message_flight
     msg['Subject'] = "Checking flights"
     to = MY_EMAIL
     gmail_user = BOT_EMAIL

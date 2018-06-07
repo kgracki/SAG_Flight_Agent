@@ -80,10 +80,19 @@ async def check_flights_azair(min_day, max_day):
     price_g_list = soup.findAll("span", {"class": "tp"})
 
     best_price = price_g_list[0].text
+    
 
     from_g_list = soup.findAll("span", {"class": "from"})
     to_g_list = soup.findAll("span", {"class": "to"})
 
+    best_flight = (date_g_list[0].text,
+                   from_g_list[0].text,
+                   to_g_list[0].text,
+                   date_g_list[1].text,
+                   from_g_list[2].text,
+                   to_g_list[2].text,
+                   best_price)
+    
     # print data
     for element in range(len(g_list)):
         print (date_g_list[element * 2].text)           
@@ -100,7 +109,8 @@ async def check_flights_azair(min_day, max_day):
         
 #     print(best_price)
     pattern = best_price.split(" ")
-    return int(pattern[0])
+#     return int(pattern[0])
+    return best_flight
 
 async def check_promotion_fru():
     
