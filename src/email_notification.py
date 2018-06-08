@@ -15,7 +15,8 @@ from constants import *
 
 async def send_email(best_price):
     msg = MIMEMultipart()
-    message_flight = ''.join(best_price)
+    if best_price is not None:
+        message_flight = ''.join(best_price)
     message = "Hello, best price is: %s" % message_flight
     msg['Subject'] = "Checking flights"
     to = MY_EMAIL

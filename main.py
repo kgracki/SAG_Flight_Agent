@@ -66,7 +66,10 @@ async def checking_done(actor, price1, price2):
     resp = await send(email_actor, 'run', email_callback, best_flight)
     if not resp:
         print("Trying one more time...")
-        await send(email_actor, 'run', email_callback, best_flight)
+        resp = await send(email_actor, 'run', email_callback, best_flight)
+        if not resp:
+            print("Sending was unsuccessful")
+            await send(email_actor, 'stop')
     else:
         print("Sending was successful")    
         await send(email_actor, 'stop') 
